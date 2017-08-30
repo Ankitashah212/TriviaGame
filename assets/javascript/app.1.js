@@ -83,78 +83,7 @@ function showTimedOut() {
     currQuestion++;
     timerID = setTimeout(function () { doTrivia(currQuestion) }, 1000);
 }
-//  Our stopwatch object.
-var stopwatch = {
-    time: 30,
 
-    reset: function () {
-
-        stopwatch.time = 30;
-
-        $("#counter").html("Time Remaining" + this.time);
-    },
-
-    start: function () {
-
-        //  TODO: Use setInterval to start the count here and set the clock to running.
-        if (!clockRunning) {
-            clockRunning = true;
-            intervalId = setInterval(function () {
-                stopwatch.count();
-            }, 1000);
-            //------------------------------------------------------------
-
-            showTrivia(currQuestion);
-            $(".answer").on("click", function () {
-                var selection = $(this).text();
-                if (triviaArray[currQuestion].correctAns == selection) {
-
-                    $('#mainContent').css("display", "none");
-                    $('#gifDiv').show();
-                    $("#message").text("congratulation !!").show();
-                    currQuestion++;
-                    correct++;
-                    stopwatch.reset();
-                }
-                else {
-                    $('#mainContent').css("display", "none");
-                    $('#gifDiv').show();
-                    $("#message").text("Sorry!! The correct Answer is " + triviaArray[currQuestion].correctAns).show();
-                    incorrect++;
-                    currQuestion++;
-                    stopwatch.reset();
-
-                }
-
-            });
-
-
-
-            //-----------------------------------------------------------------
-
-
-        }
-
-    },
-    stop: function () {
-        clearInterval(intervalId);
-        //  TODO: Use clearInterval to stop the count here and set the clock to not be running.
-        clockRunning = false;
-    },
-
-    count: function () {
-        this.time--;
-        if (this.time == 0) {
-            alert("over");
-            clearInterval(intervalId);
-            clockRunning = false;
-        }
-
-        $("#counter").html("Time Remaining" + this.time);
-    },
-
-
-};
 //create an object for question with possible answers
 $(document).ready(function () {
 
@@ -166,10 +95,9 @@ $(document).ready(function () {
         $('#gifDiv').css("display", "none");
         $("#message").css("display", "none");
 
-        stopwatch.start();
 
-
-
+        doTrivia(0);
+        timeoutID = setTimeout(function () { showTimedOut(); }, 3000);
     });
 
 });

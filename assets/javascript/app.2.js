@@ -91,7 +91,7 @@ var stopwatch = {
 
         stopwatch.time = 30;
 
-        $("#counter").html("Time Remaining" + this.time);
+        $("#counter").html("Time Remaining" +this.time);
     },
 
     start: function () {
@@ -102,37 +102,8 @@ var stopwatch = {
             intervalId = setInterval(function () {
                 stopwatch.count();
             }, 1000);
-            //------------------------------------------------------------
-
-            showTrivia(currQuestion);
-            $(".answer").on("click", function () {
-                var selection = $(this).text();
-                if (triviaArray[currQuestion].correctAns == selection) {
-
-                    $('#mainContent').css("display", "none");
-                    $('#gifDiv').show();
-                    $("#message").text("congratulation !!").show();
-                    currQuestion++;
-                    correct++;
-                    stopwatch.reset();
-                }
-                else {
-                    $('#mainContent').css("display", "none");
-                    $('#gifDiv').show();
-                    $("#message").text("Sorry!! The correct Answer is " + triviaArray[currQuestion].correctAns).show();
-                    incorrect++;
-                    currQuestion++;
-                    stopwatch.reset();
-
-                }
-
-            });
-
-
-
-            //-----------------------------------------------------------------
-
-
+            console.log('intervalId: ', intervalId);
+            //Then start the interval to run for every second.
         }
 
     },
@@ -150,7 +121,7 @@ var stopwatch = {
             clockRunning = false;
         }
 
-        $("#counter").html("Time Remaining" + this.time);
+        $("#counter").html("Time Remaining" +this.time);
     },
 
 
