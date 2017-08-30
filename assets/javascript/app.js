@@ -3,12 +3,12 @@ var maxQuestion = 6;
 var currQuestion = 0;
 //  Variable that will hold our setInterval that runs the stopwatch
 var intervalId;
-var gifIntervalID;
 //prevents the clock from being sped up unnecessarily
 var clockRunning = false;
 var correct = 0;
 var incorrect = 0;
 var missed = 0;
+var givenTime = 10;
 
 
 // question -string question to be asked
@@ -22,12 +22,12 @@ function Trivia(question, answers, correctAns, image) {
 }
 
 var triviaArray = [];
-var q1 = new Trivia("what did Ana want to do with Elsa ? ", ["Rule the World", "Play Princess", "Build a snowman", "Go Rock climbing"], "Build a snowman", "assets/images/pony.gif");
-var q2 = new Trivia("What did Ariel want?", ["Legs", "Wings", "Fins", "Horn"], "Legs", "assets/images/pony.gif");
-var q3 = new Trivia("which house harry potter belongs to?", ["Slytherin", "Ravenclaw", "Hufflepuff", "Gryffindor"], "Gryffindor", "assets/images/pony.gif");
-var q4 = new Trivia("Who says my precious in Lord of the rings?", ["Gollum", "Legolas", "Sauron", "Bilbo"], "Gollum", "assets/images/pony.gif");
-var q5 = new Trivia("What is Jasmine's pet's name?", ["Raja", "Zaza", "Fitch", "Ali"], "Raja", "assets/images/pony.gif");
-var q6 = new Trivia("What says everything the light touches is our kingdom?", ["Scar", "Mufasa", "Simba", "Naala"], "Mufasa", "assets/images/pony.gif");
+var q1 = new Trivia("what did Ana want to do with Elsa ? ", ["Rule the World", "Play Princess", "Build a snowman", "Go Rock climbing"], "Build a snowman", "assets/images/olaf.gif");
+var q2 = new Trivia("What did Ariel want?", ["Legs", "Wings", "Fins", "Horn"], "Legs", "assets/images/ariel.gif");
+var q3 = new Trivia("which house harry potter belongs to?", ["Slytherin", "Ravenclaw", "Hufflepuff", "Gryffindor"], "Gryffindor", "assets/images/potter.gif");
+var q4 = new Trivia("Who says my precious in Lord of the rings?", ["Gollum", "Legolas", "Sauron", "Bilbo"], "Gollum", "assets/images/gollum.gif");
+var q5 = new Trivia("What is Jasmine's pet's name?", ["Raja", "Zaza", "Fitch", "Ali"], "Raja", "assets/images/raja.gif");
+var q6 = new Trivia("What says everything the light touches is our kingdom?", ["Scar", "Mufasa", "Simba", "Naala"], "Mufasa", "assets/images/mufasa.gif");
 
 
 triviaArray.push(q1);
@@ -41,9 +41,11 @@ triviaArray.push(q6);
 function showTrivia(position) {
     console.log("in show trivia " + currQuestion + " " + maxQuestion);
     $('#startDiv').css("display", "none");
-    $('#mainContent').show();
     $('#gifDiv').css("display", "none");
     $("#message").css("display", "none");
+
+    $('#mainContent').show();
+
     var trivia = triviaArray[position];
     $("#question").text(triviaArray[position].question);
     // console.log(trivia.answers);
@@ -60,26 +62,30 @@ function showScore() {
     $('#gifDiv').css("display", "none");
     $("#message").css("display", "none");
     $("#doneZone").show();
-    $("#doneZone").html("Correct Ans" + correct
-        + "\n" + "Wrong Ans "
-        + incorrect);
+    $("#doneZone").html("Correct Ans : " + correct
+        + "<br>" + "Wrong Ans : "
+        + incorrect + "<br>" + " Missed : " + missed);
+    $("#restart").show();
+    $("#restart").html("Click to Restart");
 
 }
 
 //  Our stopwatch object.
 var stopwatch = {
-    time: 10,
+    time: givenTime,
 
     reset: function () {
         clearInterval(intervalId);
         //  TODO: Use clearInterval to stop the count here and set the clock to not be running.
         clockRunning = false;
-        this.time = 10;
-        $("#counter").html("Time Remaining" + this.time);
+        this.time = givenTime;
+        $("#counter").html("Time Remaining : " + this.time);
         //------------------------------------------------
         currQuestion++;
         if (currQuestion < maxQuestion) {
+
             showTrivia(currQuestion);
+
             stopwatch.start();
         }
         else {
@@ -96,7 +102,7 @@ var stopwatch = {
             intervalId = setInterval(function () {
                 stopwatch.count();
             }, 1000);
-     }
+        }
     },
 
     stop: function () {
@@ -118,14 +124,18 @@ var stopwatch = {
             $('#mainContent').css("display", "none");
             $('#gifDiv').show();
             $("#message").text("Sorry!!Time Out !! The correct Answer was " + triviaArray[currQuestion].correctAns).show();
-            stopwatch.reset();
+            setTimeout(function () {
+                stopwatch.reset();
+            }, 1000);
             //---------------------------
         }
-        $("#counter").html("Time Remaining" + this.time);
+        $("#counter").html("Time Remaining : " + this.time);
     },
 
 
 };
+
+
 //create an object for question with possible answers
 $(document).ready(function () {
 
@@ -133,34 +143,54 @@ $(document).ready(function () {
 
         //reset text for score
 
-            //------------------------------------------------------------
-            showTrivia(currQuestion);
-            //-----------------------------------------------------------------
-
+        //------------------------------------------------------------
+        showTrivia(currQuestion);
+        //-----------------------------------------------------------------
         stopwatch.start();
-
     });
-     $(".answer").on("click", function () {
-            var selection = $(this).text();
-            if (triviaArray[currQuestion].correctAns == selection) {
-                $('#mainContent').css("display", "none");
-                $('#gifDiv').show();
-                $("#message").text("congratulation !!").show();
-                correct++;
-                console.log("in right " + currQuestion + " " + maxQuestion);
-                
-                stopwatch.reset();
-            }
-            else {
-                $('#mainContent').css("display", "none");
+    $(".answer").on("click", function () {
+        var selection = $(this).text();
+        if (triviaArray[currQuestion].correctAns == selection) {
+            $('#mainContent').css("display", "none");
+            $('#gifDiv').show();
+            $("#message").text("congratulation !!").show();
+            correct++;
+            console.log("in right " + currQuestion + " " + maxQuestion);
 
-                $('#gifDiv').show();
-                $("#message").text("Sorry!! The correct Answer is " + triviaArray[currQuestion].correctAns).show();
-                incorrect++;
-                console.log("in wrong ans " + currQuestion + " " + maxQuestion);
-
+            setTimeout(function () {
                 stopwatch.reset();
-            }
-        });
+            }, 3000);
+        }
+        else {
+            $('#mainContent').css("display", "none");
+
+            $('#gifDiv').show();
+            $("#message").text("Sorry!! The correct Answer is " + triviaArray[currQuestion].correctAns).show();
+            incorrect++;
+            console.log("in wrong ans " + currQuestion + " " + maxQuestion);
+
+            setTimeout(function () {
+                stopwatch.reset();
+            }, 3000);
+
+        }
+    });
+    $("#restart").on("click", function () {
+
+        //reset variables
+
+        currQuestion = 0;
+        clockRunning = false;
+        correct = 0;
+        incorrect = 0;
+        missed = 0;
+
+        $("#doneZone").css("display", "none");
+        $("#restart").css("display", "none");
+        //------------------------------------------------------------
+        showTrivia(currQuestion);
+        //-----------------------------------------------------------------
+        stopwatch.start();
+    });
 
 });
