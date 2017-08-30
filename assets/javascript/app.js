@@ -1,15 +1,12 @@
 
 var maxQuestion = 6;
 var currQuestion = 0;
-//  Variable that will hold our setInterval that runs the stopwatch
 var intervalId;
-//prevents the clock from being sped up unnecessarily
 var clockRunning = false;
 var correct = 0;
 var incorrect = 0;
 var missed = 0;
 var givenTime = 10;
-
 
 // question -string question to be asked
 //answers - array of possible answers
@@ -29,7 +26,7 @@ var q4 = new Trivia("Who says my precious in Lord of the rings?", ["Gollum", "Le
 var q5 = new Trivia("What is Jasmine's pet's name?", ["Raja", "Zaza", "Fitch", "Ali"], "Raja", "assets/images/raja.gif");
 var q6 = new Trivia("What says everything the light touches is our kingdom?", ["Scar", "Mufasa", "Simba", "Naala"], "Mufasa", "assets/images/mufasa.gif");
 
-
+//create array of questions / answers
 triviaArray.push(q1);
 triviaArray.push(q2);
 triviaArray.push(q3);
@@ -39,16 +36,14 @@ triviaArray.push(q6);
 
 
 function showTrivia(position) {
-    console.log("in show trivia " + currQuestion + " " + maxQuestion);
+    //hide divs - only question and answers visible
     $('#startDiv').css("display", "none");
     $('#gifDiv').css("display", "none");
     $("#message").css("display", "none");
-
     $('#mainContent').show();
-
+    //standard for loop to find array element - in our case question / quiz
     var trivia = triviaArray[position];
     $("#question").text(triviaArray[position].question);
-    // console.log(trivia.answers);
     for (var i = 0; i < trivia.answers.length; i++) {
         var element = trivia.answers[i];
         $("#ans" + i).text(element);
@@ -57,66 +52,64 @@ function showTrivia(position) {
 }
 
 function showScore() {
+    //method is only called when done with quiz
+    // hide everything except score and restart button
     $('#startDiv').css("display", "none");
     $('#mainContent').css("display", "none");
     $('#gifDiv').css("display", "none");
     $("#message").css("display", "none");
+    //populate score
     $("#doneZone").show();
     $("#doneZone").html("Correct Ans : " + correct
         + "<br>" + "Wrong Ans : "
         + incorrect + "<br>" + " Missed : " + missed);
     $("#restart").show();
     $("#restart").html("Click to Restart");
-
 }
 
-//  Our stopwatch object.
-var stopwatch = {
+var triviaCounter = {
     time: givenTime,
 
     reset: function () {
         clearInterval(intervalId);
-        //  TODO: Use clearInterval to stop the count here and set the clock to not be running.
         clockRunning = false;
         this.time = givenTime;
         $("#counter").html("Time Remaining : " + this.time);
         //------------------------------------------------
+        //check if quiz is done - if not then next question
         currQuestion++;
         if (currQuestion < maxQuestion) {
 
             showTrivia(currQuestion);
 
-            stopwatch.start();
+            triviaCounter.start();
         }
         else {
-            showScore();
+            showScore(); //if done show score
         }
         //------------------------------------------------
     },
 
     start: function () {
 
-        //  TODO: Use setInterval to start the count here and set the clock to running.
         if (!clockRunning) {
             clockRunning = true;
             intervalId = setInterval(function () {
-                stopwatch.count();
+                triviaCounter.count();
             }, 1000);
         }
     },
 
     stop: function () {
         clearInterval(intervalId);
-        //  TODO: Use clearInterval to stop the count here and set the clock to not be running.
         clockRunning = false;
     },
 
     count: function () {
         this.time--;
 
-        //---------------------------------------------------------
-        //-------------------------------------------------------
         if (this.time == 0) {
+            // if time runs out - no answer selected.
             clearInterval(intervalId);
             clockRunning = false;
             //---------------------------
@@ -125,31 +118,30 @@ var stopwatch = {
             $('#gifDiv').show();
             $("#message").text("Sorry!!Time Out !! The correct Answer was " + triviaArray[currQuestion].correctAns).show();
             setTimeout(function () {
-                stopwatch.reset();
+                triviaCounter.reset();
             }, 1000);
             //---------------------------
         }
         $("#counter").html("Time Remaining : " + this.time);
     },
-
-
 };
-
 
 //create an object for question with possible answers
 $(document).ready(function () {
 
     $("#start").on("click", function () {
 
-        //reset text for score
-
         //------------------------------------------------------------
+        //starting quiz for the very first time
         showTrivia(currQuestion);
         //-----------------------------------------------------------------
-        stopwatch.start();
+        triviaCounter.start();
     });
+
+    //on selection of answer
     $(".answer").on("click", function () {
         var selection = $(this).text();
+        //if correct
         if (triviaArray[currQuestion].correctAns == selection) {
             $('#mainContent').css("display", "none");
             $('#gifDiv').show();
@@ -158,19 +150,18 @@ $(document).ready(function () {
             console.log("in right " + currQuestion + " " + maxQuestion);
 
             setTimeout(function () {
-                stopwatch.reset();
+                triviaCounter.reset();
             }, 3000);
         }
         else {
             $('#mainContent').css("display", "none");
-
             $('#gifDiv').show();
             $("#message").text("Sorry!! The correct Answer is " + triviaArray[currQuestion].correctAns).show();
             incorrect++;
             console.log("in wrong ans " + currQuestion + " " + maxQuestion);
 
             setTimeout(function () {
-                stopwatch.reset();
+                triviaCounter.reset();
             }, 3000);
 
         }
@@ -178,7 +169,6 @@ $(document).ready(function () {
     $("#restart").on("click", function () {
 
         //reset variables
-
         currQuestion = 0;
         clockRunning = false;
         correct = 0;
@@ -190,7 +180,7 @@ $(document).ready(function () {
         //------------------------------------------------------------
         showTrivia(currQuestion);
         //-----------------------------------------------------------------
-        stopwatch.start();
+        triviaCounter.start();
     });
 
 });
