@@ -24,7 +24,7 @@ var q2 = new Trivia("What did Ariel want?", ["Legs", "Wings", "Fins", "Horn"], "
 var q3 = new Trivia("which house harry potter belongs to?", ["Slytherin", "Ravenclaw", "Hufflepuff", "Gryffindor"], "Gryffindor", "assets/images/potter.gif");
 var q4 = new Trivia("Who says my precious in Lord of the rings?", ["Gollum", "Legolas", "Sauron", "Bilbo"], "Gollum", "assets/images/gollum.gif");
 var q5 = new Trivia("What is Jasmine's pet's name?", ["Raja", "Zaza", "Fitch", "Ali"], "Raja", "assets/images/raja.gif");
-var q6 = new Trivia("What says everything the light touches is our kingdom?", ["Scar", "Mufasa", "Simba", "Naala"], "Mufasa", "assets/images/mufasa.gif");
+var q6 = new Trivia("Who says everything the light touches is our kingdom?", ["Scar", "Mufasa", "Simba", "Naala"], "Mufasa", "assets/images/mufasa.gif");
 
 //create array of questions / answers
 triviaArray.push(q1);
