@@ -1,8 +1,12 @@
-
-body{
-    
+.giffy{
+    display: none;
+    width: 50%;
+    margin-left: 25%;
+    float: left;
+     color: whitesmoke;
+    text-align: center;
+    font-size: 30px;
 }
-
 
 .answer{
     color: whitesmoke;
@@ -13,7 +17,7 @@ body{
     border: 3px groove whitesmoke;
 }
 
-.question{
+.trivia{
     color: white;
      text-align: center;
     width: 100%;
