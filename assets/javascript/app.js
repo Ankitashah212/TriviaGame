@@ -3,7 +3,7 @@ var maxQuestion = 6;
 var currQuestion = 0;
 //  Variable that will hold our setInterval that runs the stopwatch
 var intervalId;
-
+var gifIntervalID;
 //prevents the clock from being sped up unnecessarily
 var clockRunning = false;
 var correct = 0;
@@ -39,9 +39,14 @@ triviaArray.push(q6);
 
 
 function showTrivia(position) {
+    console.log("in show trivia " + currQuestion + " " + maxQuestion);
+    $('#startDiv').css("display", "none");
+    $('#mainContent').show();
+    $('#gifDiv').css("display", "none");
+    $("#message").css("display", "none");
     var trivia = triviaArray[position];
-    $("#question").text(trivia.question);
-    console.log(trivia.answers);
+    $("#question").text(triviaArray[position].question);
+    // console.log(trivia.answers);
     for (var i = 0; i < trivia.answers.length; i++) {
         var element = trivia.answers[i];
         $("#ans" + i).text(element);
@@ -49,49 +54,38 @@ function showTrivia(position) {
     $('#gifDiv').html('<img src="' + triviaArray[position].image + '" alt="Smiley face" height="300" width="300"> ');
 }
 
-function doTrivia(currQuestion) {
-
-
-    showTrivia(currQuestion);
-    $(".answer").on("click", function () {
-        var selection = $(this).text();
-        if (triviaArray[currQuestion].correctAns == selection) {
-
-            $('#mainContent').css("display", "none");
-            $('#gifDiv').show();
-            $("#message").text("congratulation !!").show();
-            currQuestion++;
-            correct++;
-
-        }
-        else {
-            $('#mainContent').css("display", "none");
-            $('#gifDiv').show();
-            $("#message").text("Sorry!! The correct Answer is " + triviaArray[currQuestion].correctAns).show();
-            incorrect++;
-            currQuestion++;
-        }
-
-    });
-    console.log("object");
-}
-function showTimedOut() {
-    missed++;
+function showScore() {
+    $('#startDiv').css("display", "none");
     $('#mainContent').css("display", "none");
-    $('#gifDiv').show();
-    $("#message").text("Sorry!!Time Out !! The correct Answer was " + triviaArray[currQuestion].correctAns).show();
-    currQuestion++;
-    timerID = setTimeout(function () { doTrivia(currQuestion) }, 1000);
+    $('#gifDiv').css("display", "none");
+    $("#message").css("display", "none");
+    $("#doneZone").show();
+    $("#doneZone").html("Correct Ans" + correct
+        + "\n" + "Wrong Ans "
+        + incorrect);
+
 }
+
 //  Our stopwatch object.
 var stopwatch = {
-    time: 30,
+    time: 10,
 
     reset: function () {
-
-        stopwatch.time = 30;
-
+        clearInterval(intervalId);
+        //  TODO: Use clearInterval to stop the count here and set the clock to not be running.
+        clockRunning = false;
+        this.time = 10;
         $("#counter").html("Time Remaining" + this.time);
+        //------------------------------------------------
+        currQuestion++;
+        if (currQuestion < maxQuestion) {
+            showTrivia(currQuestion);
+            stopwatch.start();
+        }
+        else {
+            showScore();
+        }
+        //------------------------------------------------
     },
 
     start: function () {
@@ -102,40 +96,9 @@ var stopwatch = {
             intervalId = setInterval(function () {
                 stopwatch.count();
             }, 1000);
-            //------------------------------------------------------------
-
-            showTrivia(currQuestion);
-            $(".answer").on("click", function () {
-                var selection = $(this).text();
-                if (triviaArray[currQuestion].correctAns == selection) {
-
-                    $('#mainContent').css("display", "none");
-                    $('#gifDiv').show();
-                    $("#message").text("congratulation !!").show();
-                    currQuestion++;
-                    correct++;
-                    stopwatch.reset();
-                }
-                else {
-                    $('#mainContent').css("display", "none");
-                    $('#gifDiv').show();
-                    $("#message").text("Sorry!! The correct Answer is " + triviaArray[currQuestion].correctAns).show();
-                    incorrect++;
-                    currQuestion++;
-                    stopwatch.reset();
-
-                }
-
-            });
-
-
-
-            //-----------------------------------------------------------------
-
-
-        }
-
+     }
     },
+
     stop: function () {
         clearInterval(intervalId);
         //  TODO: Use clearInterval to stop the count here and set the clock to not be running.
@@ -144,12 +107,20 @@ var stopwatch = {
 
     count: function () {
         this.time--;
+
+        //---------------------------------------------------------
+        //-------------------------------------------------------
         if (this.time == 0) {
-            alert("over");
             clearInterval(intervalId);
             clockRunning = false;
+            //---------------------------
+            missed++;
+            $('#mainContent').css("display", "none");
+            $('#gifDiv').show();
+            $("#message").text("Sorry!!Time Out !! The correct Answer was " + triviaArray[currQuestion].correctAns).show();
+            stopwatch.reset();
+            //---------------------------
         }
-
         $("#counter").html("Time Remaining" + this.time);
     },
 
@@ -161,15 +132,35 @@ $(document).ready(function () {
     $("#start").on("click", function () {
 
         //reset text for score
-        $('#startDiv').css("display", "none");
-        $('#mainContent').show();
-        $('#gifDiv').css("display", "none");
-        $("#message").css("display", "none");
+
+            //------------------------------------------------------------
+            showTrivia(currQuestion);
+            //-----------------------------------------------------------------
 
         stopwatch.start();
 
-
-
     });
+     $(".answer").on("click", function () {
+            var selection = $(this).text();
+            if (triviaArray[currQuestion].correctAns == selection) {
+                $('#mainContent').css("display", "none");
+                $('#gifDiv').show();
+                $("#message").text("congratulation !!").show();
+                correct++;
+                console.log("in right " + currQuestion + " " + maxQuestion);
+                
+                stopwatch.reset();
+            }
+            else {
+                $('#mainContent').css("display", "none");
+
+                $('#gifDiv').show();
+                $("#message").text("Sorry!! The correct Answer is " + triviaArray[currQuestion].correctAns).show();
+                incorrect++;
+                console.log("in wrong ans " + currQuestion + " " + maxQuestion);
+
+                stopwatch.reset();
+            }
+        });
 
 });
