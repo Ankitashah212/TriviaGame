@@ -119,7 +119,7 @@ var triviaCounter = {
             $("#message").text("Sorry!!Time Out !! The correct Answer was " + triviaArray[currQuestion].correctAns).show();
             setTimeout(function () {
                 triviaCounter.reset();
-            }, 1000);
+            }, 3000);
             //---------------------------
         }
         $("#counter").html("Time Remaining : " + this.time);
